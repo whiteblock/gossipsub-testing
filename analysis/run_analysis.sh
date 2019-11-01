@@ -1,6 +1,7 @@
 #!/bin/sh
 curr_dir=`pwd`
-log_path="../logs/fully_connected_series_1a.1_2019-10-28T22_33_51/"
+log_dir="series_1a.2_2019-10-25T22:37:07"
+log_path="../logs/$log_dir"
 
 cd $log_path
 
