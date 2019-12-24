@@ -1,13 +1,60 @@
 # Eth2 - LibP2P Gossipsub Testing
 
 ### Overview
-The purpose of this testing initiative is to benchmark the performance of the libp2p gossipsub implementation. With time constraints present in Eth2, it is important to verify that messages will be able to be disseminated throughout the network in a timely manner. 
+The purpose of this initiative is to test the performance of the libp2p gossipsub implementation. With time constraints present in Eth2, it is important to verify that messages will be able to be disseminated throughout the network in a timely manner. This effort is supported by an [Eth2.0 Grant co-funded by the Ethereum Foundation and ConsenSys](https://blog.ethereum.org/2019/08/26/announcing-ethereum-foundation-and-co-funded-grants/).
 
-The libp2p gossipsub protocol falls under a broader class of information dissemination techniques known as epidemic protocols. This research effort intends to evaluate the performance of the gossipsub protocol to verify that it will support the specifications of Ethereum 2.0. One method to analyze the performance of epidemic protocols is to create a mathematical model. A model can provide insight into the correctness of the protocol and provide an abstract view of the protocol in action. The authors of [[1]](#References) provide an overview of the various types of formal analysis techniques for epidemic protocols. However, capturing all the dynamics of a distributed protocol intended to be deployed on a very large network into a model requires a lot of effort and is extremely difficult. Often, assumptions are made to simplify analysis which inevitably affects the accuracy and meaningfulness of the results [[1]](#References). Mathematical analysis can be paired with simulations to validate and understand the system behavior of a protocol. However, mathematical modeling and simulations are inherently abstract which causes any results to not directly reflect real-world performance. The best option for testing a distributed protocol before the launch of an actual network would be to test a network of nodes in a cloud infrastructure. This collaborative research project will investigate meaningful methodologies of testing the libp2p protocol in a peer to peer network of real nodes. This includes determining useful metrics, topologies, network impairments, and gossipsub parameters.
 
 ## Community Feedback
 
 We invite all community members interested in providing feedback to visit our discourse on this topic at the following link: https://community.whiteblock.io/t/gossipsub-tests/17/10.
+
+## Table of Contents
+- [Introduction - Understanding Testing Scope](#Introduction-Understanding-Testing-Scope)
+    - [Important Test Parameter Constants](#Important-Test-Parameter-Constants)
+    - [System Specifications](#System-Specifications)
+- []()
+## Introduction - Understanding Testing Scope
+
+This document presents the first round of results of Whiteblock’s testing and analysis of the libp2p-gossipsub protocol under random topologies with different degree distributions generated using the [Barabasi-Albert (B-A) model](https://en.wikipedia.org/wiki/Barab%C3%A1si%E2%80%93Albert_model). Tests were run using the Whiteblock Genesis platform within a single cloud instance (see System Specifications). Here, a gossip node, or simply “node,” shall specifically refer to a container that participates in the gossip network as a libp2p host. The total memory of the instance was 360GB. For all tests in this report, the parameters of libp2p-gossipsub were left at default (e.g. GossipSubD=6).
+
+While we understand the Ethereum 2.0 network is slated to consist of a much larger network size with nodes acting within several logical roles (e.g. validator), the intent of these tests were to analyze and benchmark the performance of the libp2p-gossipsub implementation. As such, it is important to emphasize overall trends in the results as opposed to individual values presented within the results themselves.
+
+### Important Test Parameter Constants
+
+Presented below is a list of the primary test parameters for consideration. Messages are generated globally. That is, for each message, a random node is selected to be the source node. The purpose of the warm-up time is to allow for the loading of containers and programs as well as the instantiation of topological connections. Nodes that complete warm-up remain idle until the test begins. The “Test Time” indicates the interval at which nodes generate gossip messages. When the test time is elapsed, the nodes continue operating until the “Cool-Down Time” is complete. The purpose of the cool-down period is to allow for any internal queues to empty. All nodes published and subscribed to a single topic.
+
+- Gossip Nodes: 95
+- Global Msg/Sec: 200
+- Warm-up Time: 60s
+- Test Time: 180s
+- Cool-Down Time: 600s
+- Msg Size: 1000 bytes
+- Discovery (mDNS): Off
+- Routing: Off
+- Security: SECIO
+- Peering: Barabasi-Albert (seed=42, varying input degree - parameters)  - { 2, 6, 12, 16 }
+
+The remainder of this document is organized as follows. We have written a full analysis of the test results and readers should jump to the graphs and test result statistics section of each test number as a reference.
+
+### System Specifications
+
+| Resource | Allocation | 
+| --------  | --------  |
+| CPU op-mode(s) | 32-bit, 64-bit |
+| CPU(s) | 96 |
+| Thread(s) per core |2 |
+| Core(s) per socket|24|
+| Socket(s) | 2 |
+| Model name | Intel(R) Xeon(R) CPU @ 2.00GHz |
+| CPU MHz | 2000.168 |
+| L1d cache | 32K |
+| L1i cache | 32K |
+| L2 cache | 1024K |
+| L3 cache | 39424K |
+| Memory block size | 1G |
+| Total online memory | 360G |
+
+Table 1 - System Specifications
 
 ## Implementation Details
 
@@ -20,7 +67,7 @@ Overview:
     - callgrind
 
 ### Resourcing 
-| Resource Allocation  | |
+| Resource Allocation  |
 | --------  | --------  |
 | CPU Resources Per Node: __number_of_cpu__ |  |
 | Memory Resources Per Node: __number_of_ram__ |  |
@@ -155,17 +202,11 @@ To provide a baseline test, we benchmark gossipsub on a fully connected network.
 
 #### 2. Random Scale-Free Network Topology (Barabasi-Albert or B-A):
 
-In 1999, Barabasi and Albert observed that the world wide web exhibited a scale-free nature and preferential attachment. Scale-free networks follow a power-law degree distribution, and preferential attachment describes the likelihood of a node connecting to nodes with high degrees. Inspired by this observation, the [Barabasi-Albert](https://en.wikipedia.org/wiki/Barab%C3%A1si%E2%80%93Albert_model) (B-A) model was created to generate random network topologies with both a power-law degree distribution and preferential attachment. As described by Albert-Barabasi in [[3]](#References) topology generation is "grown" starting with a small number *m<sub>0</sub>* of nodes. At each time step, a new node with *m &le; m<sub>0</sub>* edges that link the new node to *m* different nodes currently present in the network. *m* is the *input degree parameter*. When choosing nodes, the probability *&Pi;* that a new node will connect to some node *i* depends on the degree *k<sub>i</sub>* of node *i* such that:
+In 1999, Barabasi and Albert observed that the world wide web exhibited a scale-free nature and preferential attachment. Scale-free networks follow a power-law degree distribution, and preferential attachment describes the likelihood of a node connecting to nodes with high degrees. Inspired by this observation, the [Barabasi-Albert](https://en.wikipedia.org/wiki/Barab%C3%A1si%E2%80%93Albert_model) (B-A) model was created to generate random network topologies with both a power-law degree distribution and preferential attachment. As described by Albert-Barabasi in [[3]](#References) topology generation is "grown" starting with a small number $m_0$ of nodes. At each time step, a new node with *m &le; m<sub>0</sub>* edges that link the new node to $m$ different nodes currently present in the network. *m* is the *input degree parameter*. When choosing nodes, the probability *&Pi;* that a new node will connect to some node $i$ depends on the degree *k<sub>i</sub>* of node *i* such that:
 
-<p align="center">
-<a href="https://www.codecogs.com/eqnedit.php?latex=\fn_jvn&space;\Pi(k_i)&space;=&space;\frac{k_{i}}{\sum_{j}&space;k_{j}}" target="_blank"><img src="https://latex.codecogs.com/png.latex?\fn_jvn&space;\Pi(k_i)&space;=&space;\frac{k_{i}}{\sum_{j}&space;k_{j}}" title="\Pi(k_i) = \frac{k_{i}}{\sum_{j} k_{j}}" /></a>
-</p>
+<a align="center" href="https://www.codecogs.com/eqnedit.php?latex=\fn_jvn&space;\Pi(k_i)&space;=&space;\frac{k_{i}}{\sum_{j}&space;k_{j}}" target="_blank"><img src="https://latex.codecogs.com/png.latex?\fn_jvn&space;\Pi(k_i)&space;=&space;\frac{k_{i}}{\sum_{j}&space;k_{j}}" title="\Pi(k_i) = \frac{k_{i}}{\sum_{j} k_{j}}" /></a>
 
-Network topologies are generated using the [NetworkX](https://networkx.github.io/) python library with a constant seed to make results reproducible. Within the test series, we will sweep the input degree parameter *m* across a range around the default GossipSubD parameter (i.e., [2, 6, 12, 16] as indicated in breakdown section [Test Series](#Test-Series)). An example of a topology with *m = 4* is pictured below.
-
-<p align="center">
-    <img src="barabasi-albert-topology-degree-4.jpeg" width="60%">
-</p>
+Network topologies are generated using the [NetworkX](https://networkx.github.io/) python library with a constant seed to make results reproducible. Within the test series, we will sweep the input degree parameter $m$ across a range around the default GossipSubD parameter (i.e., [2, 6, 12, 16] as indicated in breakdown section [Test Series](#Test-Series)).
 
 ## Testing Procedure
  1.   Provision nodes
