@@ -54,7 +54,7 @@ The remainder of this document is organized as follows. We have written a full a
 | Memory block size | 1G |
 | Total online memory | 360G |
 
-Table 1 - System Specifications
+Table 1: System Specifications
 
 ### Resource Allocation Motivation
 
@@ -74,7 +74,7 @@ Within each phase, there will be a series of tests, each with a theme such as ba
 
 To help readability, all testing results have been compiled and organized into the Google Sheet linked below. 
 
-- [Gossipsub Testing Results Compilation](https://docs.google.com/spreadsheets/d/1ZoY8Rz-BqKiX-ik9Wdd-zfR0mcoOj_CYUSz8tSwtb6w/edit#gid=0)
+- [Link to Gossipsub Testing Results Compilation](https://docs.google.com/spreadsheets/d/1ZoY8Rz-BqKiX-ik9Wdd-zfR0mcoOj_CYUSz8tSwtb6w/edit#gid=0)
 
 ## Testing Metrics
 
@@ -94,7 +94,11 @@ In 1999, Barabasi and Albert observed that the world wide web exhibited a scale-
 
 <a align="center" href="https://www.codecogs.com/eqnedit.php?latex=\fn_jvn&space;\Pi(k_i)&space;=&space;\frac{k_{i}}{\sum_{j}&space;k_{j}}" target="_blank"><img src="https://latex.codecogs.com/png.latex?\fn_jvn&space;\Pi(k_i)&space;=&space;\frac{k_{i}}{\sum_{j}&space;k_{j}}" title="\Pi(k_i) = \frac{k_{i}}{\sum_{j} k_{j}}" /></a>
 
-Network topologies for testing are generated using the [NetworkX](https://networkx.github.io/) python library with a constant seed to make results reproducible. More specifics about the topology used are in explained in each Phase section.
+Network topologies for testing are generated using the [NetworkX](https://networkx.github.io/) python library with a constant seed to make results reproducible. More specifics about the topology used are in explained in each Phase section. An example of a topology with *m = 4* is pictured below.
+
+<p align="center">
+    <img src="images/barabasi-albert-topology-degree-4.jpeg" width="60%">
+</p>
 
 ## Phase 1 Testing and Results
 
@@ -115,7 +119,9 @@ For all tests, each node will use a fork of the following host and client implem
 | Topology | B-A | B-A | B-A | B-A |
 | Input Deg. Param. | 2 | 6 | 12 | 16 |
 
-### Message Delivery Ratio (MDR) Results
+<p align="center"> Table 2: Phase 1 Series 1 Test</p>
+
+### Phase 1: Message Delivery Ratio (MDR) Results
 
 The primary observation of concern within Phase 1 tests was the message delivery ratio, or packet delivery ratio, was not 100%. At a message rate of 200 msgs/sec, we expected 36,000 messages to be generated per test. At lower message rates, the delivery ratio was 100%. In Test Series 1a, the number of messages received was 25365/30000 (70.4%) or a drop rate of ~30%. Further analysis verified that the dropped packets were not a result of insufficient cool-down time. This was verified using two methods. The first was processing the logs of each individual node to see if messages were still being gossipped prior to the tests shutting down. The logs indicated that each message ID was received 95 times (i.e., once per node with no messages in-transit). To further account for this, the second method was to run a test with a two hour cool-down time. This second method also yielded the same results, implying the drop rate caused by either the protocol itself or the test client implementation.
 
@@ -136,13 +142,18 @@ Traffic generation is orchestrated by a container separate from all gossiping no
 
 Phase 2 results demonstrate that MDR Fix #1 and #2 successfully addressed the message loss issue. 
 
-### Total Time to Dissemination (“Total Nano Time”)
+### Phase 1: Total Time to Dissemination (“Total Nano Time”)
 
 In the test scenarios, the distribution graphs of total nano times included an initial spike followed by several “lobes” in a shape similar to a poisson distribution. One interesting result is the lobes in preliminary test runs where the message interval rate was 20msg/sec were absent. The distribution of total nano times followed a poisson distribution. Below is a graph which overlays all tests 1a-1d to illustrate the graphs in Sections III-VI appear to have varying lobe heights due to different Y-axis ranges
 
-TODO: Graph 1 histogram
 
-For each increase in B-A degree inputs, the initial spike of short nano times and heights of the first lobe did not follow a particular trend. The peaks of the initial spikes in tests 1a, 1b, 1c, and 1d are approximately 5650, 3950, 3550 and 2850, respectively. The peaks of the first lobe in tests 1a, 1b, 1c, and 1d are approximately 1400, 1500, 1650, and 1650, respectively. It is inconclusive what the effects of degree distributions are on total nano times. The presence of lobes cannot be explained by the GossipSubHeartbeatInterval[3], which is defaulted to 1 second at the time of these tests. The approximate times of the peaks of the spikes followed by the first three lobes are 6 ms, 75 ms, 170 ms, and 266 ms, respectively. These distances are far less than 1 second.
+<p align="center">
+    <img src="images/phase1_series1_total_nano_time.png" width="60%">
+</p>
+
+<p align="center"> Graph 1: Series 1 a-d Total Nano Time</p>
+
+For each increase in B-A degree inputs, the initial spike of short nano times and heights of the first lobe did not follow a particular trend. The peaks of the initial spikes in tests 1a, 1b, 1c, and 1d are approximately 5650, 3950, 3550 and 2850, respectively. The peaks of the first lobe in tests 1a, 1b, 1c, and 1d are approximately 1400, 1500, 1650, and 1650, respectively. It is inconclusive what the effects of degree distributions are on total nano times. The presence of lobes cannot be explained by the GossipSubHeartbeatInterval[6], which is defaulted to 1 second at the time of these tests. The approximate times of the peaks of the spikes followed by the first three lobes are 6 ms, 75 ms, 170 ms, and 266 ms, respectively. These distances are far less than 1 second.
 
 The average nano times (in milliseconds) for tests 1a-1d are 154 ms, 65 ms, 67 ms, 75 ms, respectively. While an input degree parameter of 2 shows larger average nano times (this can also be seen in the higher lobes in the nano time graphs), more statistical evidence is needed to determine if higher degrees of connectivity affect the average nano times using the default gossipsub parameters.
 
@@ -161,11 +172,178 @@ The average time for the messages to be received/propagated in test 1a was the h
 
 ### Phase 2 Test Series
 
-### Message Delivery Ratio (MDR)
+Phase 2 consists of multiple series of tests to focus on discovering any issues with the testing framework and libp2p implementation by stress-testing the software with different variables.
 
-### Last Delivery Hop Distribution
+| Latency Test | Series 2a | Series 2b | Series 2c | Series 2d |
+| -------- | ------ | ------ | ------ | ------ |
+| Network Latency (ms) | 100 | 100 | 100 | 100 |
+| Packet Loss (%) | 0 | 0 | 0 | 0 |
+| Bandwidth (MB) | 1000 | 1000 | 1000 | 1000 |
+| Total Nodes | 95 | 95 | 95 | 95
+| Message Size (B) | 1000 | 1000 | 1000 | 1000 |
+| Network-Wide Message Rate (msgs/s) | 200 | 200 | 200 | 200 |
+| Topology | B-A | B-A | B-A | B-A |
+| Input Deg. Param. | 2 | 6 | 12 | 16 |
+<p align="center"> Table 3: Series 2 - Latency Test</p>
 
-### Total Time to Dissemination (“Total Nano Time”)
+| Packet Loss Test | Series 3a | Series 3b | Series 3c | Series 3d |
+| -------- | ------ | ------ | ------ | ------ |
+| Network Latency (ms) | 0 | 0 | 0 | 0 |
+| Packet Loss (%) | 0.1 | 0.1 | 0.1 | 0.1 |
+| Bandwidth (MB) | 1000 | 1000 | 1000 | 1000 |
+| Total Nodes | 95 | 95 | 95 | 95
+| Message Size (B) | 1000 | 1000 | 1000 | 1000 |
+| Network-Wide Message Rate (msgs/s) | 200 | 200 | 200 | 200 |
+| Topology | B-A | B-A | B-A | B-A |
+| Input Deg. Param. | 2 | 6 | 12 | 16 |
+
+<p align="center"> Table 4:  Series 3 - Packet Loss Test</p>
+
+| Bandwidth Test | Series 4a | Series 4b | Series 4c |
+| -------- | ------ | ------ | ------ |
+| Network Latency (ms) | 0 | 0 | 0 |
+| Packet Loss (%) | 0 | 0 | 0 |
+| Bandwidth (MB) | 10 | 50 | 100 |
+| Total Nodes | 95 | 95 | 95 |
+| Message Size (B) | 1000 | 1000 | 1000 |
+| Network-Wide Message Rate (msgs/s) | 200 | 200 | 200 |
+| Topology | B-A | B-A | B-A | 
+| Input Deg. Param. | 6 | 6 | 6 |
+
+<p align="center"> Table 5:  Series 4 - Bandwidth Test</p>
+
+| Increased Latency Test | Series 5a | Series 5b | Series 5c | Series 5d |
+| -------- | ------ | ------ | ------ | ------ |
+| Network Latency (ms) | 400 | 400 | 400 | 400 |
+| Packet Loss (%) | 0 | 0 | 0 | 0 |
+| Bandwidth (MB) | 1000 | 1000 | 1000 | 1000 |
+| Total Nodes | 95 | 95 | 95 | 95
+| Message Size (B) | 1000 | 1000 | 1000 | 1000 |
+| Network-Wide Message Rate (msgs/s) | 200 | 200 | 200 | 200 |
+| Topology | B-A | B-A | B-A | B-A |
+| Input Deg. Param. | 2 | 6 | 12 | 16 |
+
+<p align="center"> Table 6:  Series 5 - Increased Latency Test</p>
+
+| Stress Test | Series 6a | Series 6b | Series 6c | Series 6d |
+| -------- | ------ | ------ | ------ | ------ |
+| Network Latency (ms) | 150 | 150 | 150 | 150 |
+| Packet Loss (%) | 0.01 | 0.01 | 0.01 | 0.01 |
+| Bandwidth (MB) | 10 | 10 | 10 | 10 |
+| Total Nodes | 95 | 95 | 95 | 95
+| Message Size (B) | 1000 | 1000 | 1000 | 1000 |
+| Network-Wide Message Rate (msgs/s) | 200 | 200 | 200 | 200 |
+| Topology | B-A | B-A | B-A | B-A |
+| Input Deg. Param. | 2 | 6 | 12 | 16 |
+
+<p align="center"> Table 7:  Series 6 - Stress Test</p>
+
+
+### Phase 2: Message Delivery Ratio (MDR)
+
+The message delivery ratio observed in the Phase 2 tests was 99.3% - 100%. At a message rate of 200 msgs/sec, we had sent 36,000 messages to be generated per test. Upon implementing the fixes from [MDR Fix #1](#MDR-Fix-1-for-Phase-2---Outbound-Peer-Queue-Size) and [MDR Fix #2](#MDR-Fix-2-for-Phase-2---Testing-Logic-Refactor), the message delivery rate was rectified and any message loss was not the result of implementation errors. The results did, however, exhibit a menial degree of message loss (Series1a: 22, Series2a: 39, Series3a: 246, Series5a: 10, Series6a: 40) that was observed, and they were all found for cases with a degree input of 2. The reason for this slight message loss is due to an overflow of the queue mentioned in MDR Fix #1, peerOutboundQueueSize, which is set to the default of 32 in our tests. 
+
+Generally speaking, the degree distribution of a network affected the Last Delivery Hop (the number of hops a gossip message has to make in order to reach the last receiving node). There is a correlation between the degree of connectivity and last delivery hop. As shown in Graph 2, it is observed that as the degree was increased, the delivery hop count decreased. 
+
+### Phase 2: Last Delivery Hop Distribution
+
+Generally speaking, the degree distribution of a network affected the Last Delivery Hop (the number of hops a gossip message has to make in order to reach the last receiving node). There is a correlation between the degree of connectivity and last delivery hop. As shown in Graph 2, it is observed that the as the degree was increased, the delivery hop count decreased. 
+
+<p align="center">
+    <img src="images/last_delivery_hop.png" width="60%">
+</p>
+
+<p align="center"> Graph 2: Last Delivery Hop Count </p>
+
+The drop then quickly plateaus after it’s initial drop. This trend suggests that the degree of connectivity of greater than 2 will not affect the last delivery hop assuming GossipSubD = 6 and the number of nodes ~100. Typically, hops scale with O(log(N)) where N is the size of the network. Further investigation is needed to understand the relationship of network size to last delivery hop count when using the gossipsub protocol. Also, at a low degree distribution (B-A degree input of 2), the variance of last delivery hop increased. This is expected as sparser topologies should result in an increased number of hops for each gossip message.
+
+### Phase 2: Total Time to Dissemination (“Total Nano Time”)
+
+<p align="center">
+    <img src="images/series1-6_total_nano_time_overlayed.png" width="60%">
+</p>
+
+<p align="center"> Graph 3: Total Time for Series 1-6 Results Overlayed </p>
+
+<p align="center">
+    <img src="images/phase2_series1_total_nano_time.png" width="60%">
+</p>
+
+<p align="center"> Graph 4: Series 1 a-d Total Nano Time  </p>
+
+<p align="center">
+    <img src="images/phase2_series2_total_nano_time.png" width="60%">
+</p>
+
+<p align="center"> Graph 5: Series 2 a-d Total Nano Time </p>
+
+<p align="center">
+    <img src="images/phase2_series3_total_nano_time.png" width="60%">
+</p>
+
+<p align="center"> Graph 6: Series 3 a-d Total Nano Time </p>
+
+<p align="center">
+    <img src="images/phase2_series4_total_nano_time.png" width="60%">
+</p>
+
+<p align="center"> Graph 7: Series 4 a-d Total Nano Time </p>
+
+<p align="center">
+    <img src="images/phase2_series5_total_nano_time.png" width="60%">
+</p>
+
+<p align="center"> Graph 8: Series 5 a-d Total Nano Time  </p>
+
+<p align="center">
+    <img src="images/phase2_series6_total_nano_time.png" width="60%">
+</p>
+
+<p align="center"> Graph 9: Series 6 a-d Total Nano Time </p>
+
+The graphs for series 2 - 6 are very similar to the one shown in Phase 1. Graphs 4, 6 and 7 are identical, with a high initial spike then followed by “lobes”. Like [Graph 3 in Phase 1](#Phase-1-Total-Time-to-Dissemination-“Total-Nano-Time”), The lobes here also have a shape similar to a poisson distribution. The time each message had taken to reach its destination had been recorded and then aggregated. The graphs above (Graph 4 - 9) show that the highest peaks occurred for test cases with the lowest input degree parameter of connectivity. 
+
+The average times recorded for messages ranged from 50 - 300 ms for all tests without latency impairments. Test series 5 introduced packet latencies of 400ms on the network and the average times recorded for Case A, Case B and Case C was about 1296, 834, and 620 ms, respectively. The drastic increase in delivery time was expected as a high network delay will cause the messages to reach its destination at a later time. 
+
+The results from tests 2a, 5a, and 6a (input degree param m = 2 with various network impairments) showed different behaviors from tests run with higher input degree parameters. For cases with m >= 2,  the highest amplitude was the initial peak in all graphs. However, for 2a, 5a, and 6a the highest peak was the second peak, and there were several additional peaks. In addition, the graphs have spikes instead of lobes. Test series 2, 5, and 6 had injected network delays and bandwidth variations. 
+
+### Potential Testing Inefficiencies
+
+During our testing initiatives, there were a few observations that we suggest be investigated further by the go-libp2p-pubsub community.
+
+After [MDR Fix #2](#MDR-Fix-1-for-Phase-2---Outbound-Peer-Queue-Size), the Orchestra’s message interarrival times experienced erratic and high variations. Overall, this behavior may have a slight impact on the message time since measurements are only made from initial transmission to complete dissemination. Graphs 10 and 11 below illustrate the inter-arrival times and compares the actual message initial transmission time with its expected transmission time during a test. These graphs show that nodes are blocking at some point in the code. It is suggested that further investigation on this behavior is done to diagnose this implementation weakness.
+
+<p align="center">
+    <img src="images/example_msg_interarrival_times.png" width="60%">
+</p>
+
+<p align="center"> Graph 10: Example Message Interarrival Times </p>
+
+<p align="center">
+    <img src="images/example_msg_tx_times.png" width="60%">
+</p>
+
+<p align="center"> Graph 11: Example Message Transmission Timeline </p>
+
+
+The initial test results found in the preliminary tests had an incredibly high amount of message loss (~30%). The bug had been found and fixed [4](TODO: add link to PR/commit) and the result of subsequent tests yielded all (or nearly all) messages reaching their destinations. 
+
+The results of test Series 3 Case A include message losses. Logs show that the network load generating node (Orchestra) successfully sent a RPC request for a node to transmit a message. This can be seen in the Orchestra log screenshot in Figure 1. This indicates that messages were lost at nodes, perhaps due to go channel overflows. While the logs showed that the messages were still in transit, we removed them from analysis and treated them as message losses. The total number of messages lost was 236. 
+
+<p align="center">
+    <img src="images/series3a_messages.png" width="60%">
+</p>
+<p align="center"> Figure 1: Series3a Messages</p>
+
+### Phase 2 Resource Utilization
+
+The aggregated resource usage was logged during the full duration of the warm-up, test, and cool-down. The maximum cpu usage in a single test run ranged between  19% - 72% usage. The average cpu usage per test run ranged from ~0.04% - 1%. The variance is due to the distribution of peers (network degree) that was generated by the random Barabasi-Albert Connected Graph Algorithm. Nonetheless, the CPU utilization never approached 100% which verifies that CPU load was not a bottleneck during tests.
+
+The aggregated resource usage was logged during the full duration of the warm-up, test, and cool-down. The maximum cpu usage in the test series are presented below. For series 1-4, the average cpu usage ranged from ~1.5%-22%. For series 5 & 6, the average cpu usage ranged from 0.04% - 1%. The max cpu usage ranged from 19% - 72% for series 1-4. The max cpu usage ranged from 0.18% - 2.86% for series 5 & 6 (with the exception of series 5c & 5d, which ranges from 0.25%-48.93% and 0.28%-48.07% respectively). 
+
+The behavior observed in series 5 & 6 are interesting as those test series had the harshest network impairments applied. Series 5 was introduced to a delay of 400ms, and series 6 had a delay of 150ms, bandwidth of 10mb, and packet loss of 0.01%. The results suggest that network impairments may reduce the overall CPU load of a test. Possible reasons for this could be the network delays reduce the load on the go-libp2p stack. Traffic shaping is performed via `tc`, which is known to also consume CPU resources. `tc` essentially creates virtual queues and gates packet transmissions which means data is indeed queued. However, these queues are operating at a lower layer in the network stack. It is possible go-libp2p resource consumption increases when messages arrive and are queued at the application layer. Nonetheless, the CPU utilization never approached 100% which verifies that the cloud instance had sufficient resources to not present a processing bottleneck.
+
+* Link to Resource Usage Sheet: https://docs.google.com/spreadsheets/d/1ZoY8Rz-BqKiX-ik9Wdd-zfR0mcoOj_CYUSz8tSwtb6w/edit#gid=228791707
 
 ### Configuration
 For each set of tests, the corresponding configuration used in running the [`agencyenterprise/go-libp2p-pubsub-benchmark-tools`](https://github.com/agencyenterprise/go-libp2p-pubsub-benchmark-tools) implementation will be posted.
@@ -302,3 +480,5 @@ For all tests, approximately one CPU shall be allocated for every node. Here, a 
 [4] A. Montresor, “Gossip and epidemic protocol,” Wiley Encyclopedia of Electrical and Electronics Engineering, vol. 1, 2017.
 
 [5] eth2 phase 0 networking requirements, "https://notes.ethereum.org/zgzMxFNiSF-iW5wA5uKH0Q?view"
+
+[6] https://github.com/libp2p/go-libp2p-pubsub/blob/01b9825fbee1848751d90a8469e3f5f43bac8466/gossipsub.go#L32
