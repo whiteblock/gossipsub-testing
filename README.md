@@ -1,8 +1,7 @@
 # Eth2 - LibP2P Gossipsub Testing
 
 ### Overview
-The purpose of this initiative is to test the performance of Libp2p gossipsub protocol implementations. With time constraints present in Eth2, it is important to verify that messages will be able to be disseminated throughout the network in a timely manner. This effort is supported by an [Eth2.0 Grant co-funded by the Ethereum Foundation and ConsenSys](https://blog.ethereum.org/2019/08/26/announcing-ethereum-foundation-and-co-funded-grants/).
-
+The purpose of this initiative is to test the performance of Libp2p gossipsub protocol implementations. With time constraints present in Eth2, it is important to verify that messages will be able to be disseminated throughout the network in a timely manner. This effort is supported by an [Eth2.0 Grant co-funded by the Ethereum Foundation and ConsenSys](https://blog.ethereum.org/2019/08/26/announcing-ethereum-foundation-and-co-funded-grants/). A synopsis of tests and results can be found in section ["Synopsis of All Tests and Results"](#Synopsis-of-All-Tests-and-Results).
 
 ## Community Feedback
 
@@ -13,32 +12,30 @@ We invite all community members interested in providing feedback to visit our di
     - [Important Test Parameter Constants](#important-test-parameter-constants)
     - [System Specifications](#System-Specifications)
     - [Resource Allocation Motivation](#Resource-Allocation-Motivation)
-- [Synopsis of Testing Results](#synopsis-of-testing-results)
 - [Understanding Test Phases and Series](#understanding-test-phases-and-series)
     - [Phases](#phases)
     - [Series](#series)
     - [Link: Google Sheet with All Results](#link-google-sheet-with-all-results)
+- [Synopsis of Testing Results](#synopsis-of-overall-testing-results)
 - [Testing Metrics](#testing-metrics)
 - [Network Topology Generation](#network-topology-generation)
 - [Phase 1 Testing and Results](#phase-1-testing-and-results)
-    - [Phase 1 Setup Summary](#phase-1-setup-summary)
-    - [Phase 1 Test Series](#phase-1-test-series)
+    - [Phase 1: Setup Summary](#phase-1-setup-summary)
+    - [Phase 1: Test Series](#phase-1-test-series)
     - [Phase 1: Message Delivery Ratio (MDR) Results](#phase-1-message-delivery-ratio-mdr-results)
         - [MDR Fix #1 for Phase 2 - Outbound Peer Queue Size](#mdr-fix-1-for-phase-2---outbound-peer-queue-size)
         - [MDR Fix #2 for Phase 2 - Testing Logic Refactor](#mdr-fix-2-for-phase-2---testing-logic-refactor)
     - [Phase 1: Total Time to Dissemination (“Total Nano Time”)](#phase-1-total-time-to-dissemination-total-nano-time)
 - [Phase 2 Testing and Results](#phase-2-testing-and-results)
-    - [Phase 2 Summary](#phase-2-summary)
-    - [Phase 2 Test Series](#phase-2-test-series)
+    - [Phase 2: Summary](#phase-2-setup-summary)
+    - [Phase 2: Test Series](#phase-2-test-series)
     - [Phase 2: Message Delivery Ratio (MDR)](#phase-2-message-delivery-ratio-mdr)
     - [Phase 2: Last Delivery Hop Distribution](#phase-2-last-delivery-hop-distribution)
     - [Phase 2: Total Time to Dissemination (“Total Nano Time”)](#phase-2-total-time-to-dissemination-total-nano-time)
     - [Potential Testing Inefficiencies](#potential-testing-inefficiencies)
     - [Phase 2: Resource utilization](#phase-2-resource-utilization)
 
-
 ## Introduction - Understanding Testing Scope
-
 
 This document presents the first round of results of Whiteblock’s testing and analysis of the libp2p-gossipsub protocol under random topologies with different degree distributions generated using the [Barabasi-Albert (B-A) model](https://en.wikipedia.org/wiki/Barab%C3%A1si%E2%80%93Albert_model). Tests were run using the Whiteblock Genesis platform within a single cloud instance (see System Specifications). Here, a gossip node, or simply “node,” shall specifically refer to a container that participates in the gossip network as a libp2p host. The total memory of the instance was 360GB. For all tests in this report, the parameters of libp2p-gossipsub were left at default (e.g. GossipSubD=6).
 
@@ -85,10 +82,6 @@ Table 1: System Specifications
 
 In the [prior study](https://github.com/whiteblock/p2p-tests), results showed high CPU utilization when running the `go-libp2p-daemon` in a Docker containers with one CPU allocated per node. In addition, a [preliminary study](https://github.com/protolambda/go-libp2p-gossip-berlin) showed that SHA-256 and general secio cryptography are the largest resource consumers when using `libp2p-gossipsub`. To address these issues, we will use a direct libp2p host implementation and log resource consumption (cpu, memory, and I/O) to ensure CPU usage is not a bottleneck in the performance of `libp2p-gossipsub`.
 
-## Synopsis of Testing Results
-
-
-
 ## Understanding Test Phases and Series
 
 ### Phases
@@ -104,6 +97,10 @@ Within each phase, there will be a series of tests, each with a theme such as ba
 To help readability, all testing results have been compiled and organized into the Google Sheet linked below. 
 
 - [Link to Gossipsub Testing Results Compilation](https://docs.google.com/spreadsheets/d/1ZoY8Rz-BqKiX-ik9Wdd-zfR0mcoOj_CYUSz8tSwtb6w/edit#gid=0)
+
+## Synopsis of All Tests and Results
+
+In this section, we present a general summary of the testing results. Phase 1 tests primarily focused on the correctness of the host implementation and testing methodology. The results of phase 1 uncovered message losses of 30% due to Golang channel queue overflows in the `go-libp2p-pubsub` host implementation and inconsistent delays introduced by Golang tickers used in the testing methodology. The channel overflows were remedied by increasing channel queue sizes and changing the testing methodology which resulted in 0% message loss for network topologies generated using a Barabasi-Albert input parameter greater than 2. Phase 2 focused on introducing network impairments to stress test the gossipsub protocol. Overall, Phase 2 results show that gossipsub performs sufficiently well to suit the Ethereum 2.0 specifications. Under large network latencies of 400ms, the maximum gossip time during tests was 4.573 seconds, which is under the 6 second block time specification. Results showed no CPU resource throttling under the utilized testing setup and methodology. However, results did show erratic message interrarival times which may be caused by a potential inefficiency in `go-libp2p-pubsub` implementation. More details can be found in section "[Potential Testing Inefficiencies](#potential-testing-inefficienccies)".
 
 ## Testing Metrics
 
@@ -131,11 +128,11 @@ Network topologies for testing are generated using the [NetworkX](https://networ
 
 ## Phase 1 Testing and Results
 
-### Phase 1 Setup Summary
+### Phase 1: Setup Summary
 
 For all tests, each node will use a fork of the following host and client implementation will be used: https://github.com/agencyenterprise/go-libp2p-pubsub-benchmark-tools. This implementation includes tools for generating messages at each node and analysis tools for parsing and plotting metrics described in the next section. The fork consists only of modified configuration files.
 
-### Phase 1 Test Series
+### Phase 1: Test Series
 
 | Topology | Series 1a | Series 1b | Series 1c | Series 1d |
 | -------- | ------ | ------ | ------ | ------ |
@@ -191,7 +188,7 @@ The average time for the messages to be received/propagated in test 1a was the h
 
 ## Phase 2 Testing and Results
 
-### Phase 2 Summary
+### Phase 2: Setup Summary
 
 * Testing via the Whiteblock Genesis platform
 * Libp2p Host implementation (new fork): 
@@ -199,7 +196,7 @@ The average time for the messages to be received/propagated in test 1a was the h
 * Random topologies generated using Barabasi-Albert model
 * Includes the implementation of network impairments
 
-### Phase 2 Test Series
+### Phase 2: Test Series
 
 Phase 2 consists of multiple series of tests to focus on discovering any issues with the testing framework and libp2p implementation by stress-testing the software with different variables.
 
@@ -365,7 +362,7 @@ After [MDR Fix #2](#MDR-Fix-1-for-Phase-2---Outbound-Peer-Queue-Size), the Orche
 <p align="center"> Graph 11: Example Message Transmission Timeline </p>
 
 
-The initial test results found in the preliminary tests had an incredibly high amount of message loss (~30%). The bug had been found and fixed [4](TODO: add link to PR/commit) and the result of subsequent tests yielded all (or nearly all) messages reaching their destinations. 
+The initial test results found in the preliminary tests had an incredibly high amount of message loss (~30%). The bug had been found and fixed ([see PR](https://github.com/araskachoi/go-libp2p-pubsub-benchmark-tools/pull/1)) and the result of subsequent tests yielded all (or nearly all) messages reaching their destinations. 
 
 The results of test Series 3 Case A include message losses. Logs show that the network load generating node (Orchestra) successfully sent a RPC request for a node to transmit a message. This can be seen in the Orchestra log screenshot in Figure 1. This indicates that messages were lost at nodes, perhaps due to go channel overflows. While the logs showed that the messages were still in transit, we removed them from analysis and treated them as message losses. The total number of messages lost was 236. 
 
