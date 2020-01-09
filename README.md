@@ -9,11 +9,36 @@ The purpose of this initiative is to test the performance of Libp2p gossipsub pr
 We invite all community members interested in providing feedback to visit our discourse on this topic at the following link: https://community.whiteblock.io/t/gossipsub-tests/17/10.
 
 ## Table of Contents
-- [Introduction - Understanding Testing Scope](#Introduction-Understanding-Testing-Scope)
-    - [Important Test Parameter Constants](#Important-Test-Parameter-Constants)
+- [Introduction - Understanding Testing Scope](#introduction---understanding-testing-scope)
+    - [Important Test Parameter Constants](#important-test-parameter-constants)
     - [System Specifications](#System-Specifications)
     - [Resource Allocation Motivation](#Resource-Allocation-Motivation)
+- [Synopsis of Testing Results](#synopsis-of-testing-results)
+- [Understanding Test Phases and Series](#understanding-test-phases-and-series)
+    - [Phases](#phases)
+    - [Series](#series)
+    - [Link: Google Sheet with All Results](#link-google-sheet-with-all-results)
+- [Testing Metrics](#testing-metrics)
+- [Network Topology Generation](#network-topology-generation)
+- [Phase 1 Testing and Results](#phase-1-testing-and-results)
+    - [Phase 1 Setup Summary](#phase-1-setup-summary)
+    - [Phase 1 Test Series](#phase-1-test-series)
+    - [Phase 1: Message Delivery Ratio (MDR) Results](#phase-1-message-delivery-ratio-mdr-results)
+        - [MDR Fix #1 for Phase 2 - Outbound Peer Queue Size](#mdr-fix-1-for-phase-2---outbound-peer-queue-size)
+        - [MDR Fix #2 for Phase 2 - Testing Logic Refactor](#mdr-fix-2-for-phase-2---testing-logic-refactor)
+    - [Phase 1: Total Time to Dissemination (“Total Nano Time”)](#phase-1-total-time-to-dissemination-total-nano-time)
+- [Phase 2 Testing and Results](#phase-2-testing-and-results)
+    - [Phase 2 Summary](#phase-2-summary)
+    - [Phase 2 Test Series](#phase-2-test-series)
+    - [Phase 2: Message Delivery Ratio (MDR)](#phase-2-message-delivery-ratio-mdr)
+    - [Phase 2: Last Delivery Hop Distribution](#phase-2-last-delivery-hop-distribution)
+    - [Phase 2: Total Time to Dissemination (“Total Nano Time”)](#phase-2-total-time-to-dissemination-total-nano-time)
+    - [Potential Testing Inefficiencies](#potential-testing-inefficiencies)
+    - [Phase 2: Resource utilization](#phase-2-resource-utilization)
+
+
 ## Introduction - Understanding Testing Scope
+
 
 This document presents the first round of results of Whiteblock’s testing and analysis of the libp2p-gossipsub protocol under random topologies with different degree distributions generated using the [Barabasi-Albert (B-A) model](https://en.wikipedia.org/wiki/Barab%C3%A1si%E2%80%93Albert_model). Tests were run using the Whiteblock Genesis platform within a single cloud instance (see System Specifications). Here, a gossip node, or simply “node,” shall specifically refer to a container that participates in the gossip network as a libp2p host. The total memory of the instance was 360GB. For all tests in this report, the parameters of libp2p-gossipsub were left at default (e.g. GossipSubD=6).
 
@@ -60,6 +85,10 @@ Table 1: System Specifications
 
 In the [prior study](https://github.com/whiteblock/p2p-tests), results showed high CPU utilization when running the `go-libp2p-daemon` in a Docker containers with one CPU allocated per node. In addition, a [preliminary study](https://github.com/protolambda/go-libp2p-gossip-berlin) showed that SHA-256 and general secio cryptography are the largest resource consumers when using `libp2p-gossipsub`. To address these issues, we will use a direct libp2p host implementation and log resource consumption (cpu, memory, and I/O) to ensure CPU usage is not a bottleneck in the performance of `libp2p-gossipsub`.
 
+## Synopsis of Testing Results
+
+
+
 ## Understanding Test Phases and Series
 
 ### Phases
@@ -70,7 +99,7 @@ This research effort is split into test phases to illustrate to the community th
 
 Within each phase, there will be a series of tests, each with a theme such as bandwidth variation and packet loss variation.
 
-### Link: Google Doc with All Results
+### Link: Google Sheet with All Results
 
 To help readability, all testing results have been compiled and organized into the Google Sheet linked below. 
 
@@ -307,6 +336,16 @@ The average times recorded for messages ranged from 50 - 300 ms for all tests wi
 
 The results from tests 2a, 5a, and 6a (input degree param m = 2 with various network impairments) showed different behaviors from tests run with higher input degree parameters. For cases with m >= 2,  the highest amplitude was the initial peak in all graphs. However, for 2a, 5a, and 6a the highest peak was the second peak, and there were several additional peaks. In addition, the graphs have spikes instead of lobes. Test series 2, 5, and 6 had injected network delays and bandwidth variations. 
 
+### Phase 2 Resource Utilization
+
+The aggregated resource usage was logged during the full duration of the warm-up, test, and cool-down. The maximum cpu usage in a single test run ranged between  19% - 72% usage. The average cpu usage per test run ranged from ~0.04% - 1%. The variance is due to the distribution of peers (network degree) that was generated by the random Barabasi-Albert Connected Graph Algorithm. Nonetheless, the CPU utilization never approached 100% which verifies that CPU load was not a bottleneck during tests.
+
+The aggregated resource usage was logged during the full duration of the warm-up, test, and cool-down. The maximum cpu usage in the test series are presented below. For series 1-4, the average cpu usage ranged from ~1.5%-22%. For series 5 & 6, the average cpu usage ranged from 0.04% - 1%. The max cpu usage ranged from 19% - 72% for series 1-4. The max cpu usage ranged from 0.18% - 2.86% for series 5 & 6 (with the exception of series 5c & 5d, which ranges from 0.25%-48.93% and 0.28%-48.07% respectively). 
+
+The behavior observed in series 5 & 6 are interesting as those test series had the harshest network impairments applied. Series 5 was introduced to a delay of 400ms, and series 6 had a delay of 150ms, bandwidth of 10mb, and packet loss of 0.01%. The results suggest that network impairments may reduce the overall CPU load of a test. Possible reasons for this could be the network delays reduce the load on the go-libp2p stack. Traffic shaping is performed via `tc`, which is known to also consume CPU resources. `tc` essentially creates virtual queues and gates packet transmissions which means data is indeed queued. However, these queues are operating at a lower layer in the network stack. It is possible go-libp2p resource consumption increases when messages arrive and are queued at the application layer. Nonetheless, the CPU utilization never approached 100% which verifies that the cloud instance had sufficient resources to not present a processing bottleneck.
+
+* Link to Resource Usage Sheet: https://docs.google.com/spreadsheets/d/1ZoY8Rz-BqKiX-ik9Wdd-zfR0mcoOj_CYUSz8tSwtb6w/edit#gid=228791707
+
 ### Potential Testing Inefficiencies
 
 During our testing initiatives, there were a few observations that we suggest be investigated further by the go-libp2p-pubsub community.
@@ -335,18 +374,8 @@ The results of test Series 3 Case A include message losses. Logs show that the n
 </p>
 <p align="center"> Figure 1: Series3a Messages</p>
 
-### Phase 2 Resource Utilization
-
-The aggregated resource usage was logged during the full duration of the warm-up, test, and cool-down. The maximum cpu usage in a single test run ranged between  19% - 72% usage. The average cpu usage per test run ranged from ~0.04% - 1%. The variance is due to the distribution of peers (network degree) that was generated by the random Barabasi-Albert Connected Graph Algorithm. Nonetheless, the CPU utilization never approached 100% which verifies that CPU load was not a bottleneck during tests.
-
-The aggregated resource usage was logged during the full duration of the warm-up, test, and cool-down. The maximum cpu usage in the test series are presented below. For series 1-4, the average cpu usage ranged from ~1.5%-22%. For series 5 & 6, the average cpu usage ranged from 0.04% - 1%. The max cpu usage ranged from 19% - 72% for series 1-4. The max cpu usage ranged from 0.18% - 2.86% for series 5 & 6 (with the exception of series 5c & 5d, which ranges from 0.25%-48.93% and 0.28%-48.07% respectively). 
-
-The behavior observed in series 5 & 6 are interesting as those test series had the harshest network impairments applied. Series 5 was introduced to a delay of 400ms, and series 6 had a delay of 150ms, bandwidth of 10mb, and packet loss of 0.01%. The results suggest that network impairments may reduce the overall CPU load of a test. Possible reasons for this could be the network delays reduce the load on the go-libp2p stack. Traffic shaping is performed via `tc`, which is known to also consume CPU resources. `tc` essentially creates virtual queues and gates packet transmissions which means data is indeed queued. However, these queues are operating at a lower layer in the network stack. It is possible go-libp2p resource consumption increases when messages arrive and are queued at the application layer. Nonetheless, the CPU utilization never approached 100% which verifies that the cloud instance had sufficient resources to not present a processing bottleneck.
-
-* Link to Resource Usage Sheet: https://docs.google.com/spreadsheets/d/1ZoY8Rz-BqKiX-ik9Wdd-zfR0mcoOj_CYUSz8tSwtb6w/edit#gid=228791707
-
 ### Configuration
-For each set of tests, the corresponding configuration used in running the [`agencyenterprise/go-libp2p-pubsub-benchmark-tools`](https://github.com/agencyenterprise/go-libp2p-pubsub-benchmark-tools) implementation will be posted.
+For each set of tests, the corresponding configuration used in running the [`agencyenterprise/go-libp2p-pubsub-benchmark-tools`](https://github.com/agencyenterprise/go-libp2p-pubsub-benchmark-tools) and the [`whiteblock/go-libp2p-pubsub-benchmark-tools`](https://github.com/whiteblock/go-libp2p-pubsub-benchmark-tools) implementations will be posted.
 
 Example host.json:
 ```
@@ -422,54 +451,7 @@ Example orchestra.json:
 }
 ```
 
-## Testing Procedure
- 1.   Provision nodes
- 2.   Statically peer each node according to specified topology
- 3.   Configure actions and behavior between nodes according to specified test case
- 4.   Apply network conditions (if applicable)
- 5.   Send messages from specified number of nodes
- 6.   Log message data from each node
- 7.   Timeout 10 seconds -- we have to make sure we do this
- 8.   Make sure all data is saved in proper format
- 9.   Backup data locally
- 10.  Tear down network
- 11.  Parse and aggregate data after each test
- 
-## Resource Profiling
-
-During each test, a time series of resource utilization captured by `docker stats` will be logged.
-
-## Test Series
-
-For all tests, approximately one CPU shall be allocated for every node. Here, a node is defined as a participant in the gossip network. There will be an additional Docker container beyond the total nodes launched to facilitate the orchestration of the test (see orchestra in `agencyenterprise/go-libp2p-pubsub-benchmark-tools`).
-
-### Series 11: Control Test (Fully Connected)
-
-| Vars | Topology | Case A |
-| ---- | -------- | ------ |
-|  | Network Latency (ms) | 0 |
-|  | Packet Loss (%) | 0 |
-|  | Bandwidth (MB) | 1000 |
-|  | Total Nodes | 95 |
-|  | Message Size (B) | 1000 |
-|  | Network-wide Message Rate (msgs/s) | 200 |
-|  | Topology | Fully Connected|
-
-### Series 21: 
-| Vars | Topology | Case A | Case B | Case C | Case D |
-| ---- | -------- | ------ | ------ | ------ | ------ |
-|  | Network Latency (ms) | 0 | 0 | 0 | 0 |
-|  | Packet Loss (%) | 0 | 0 | 0 | 0 |
-|  | Bandwidth (MB) | 1000 | 1000 | 1000 | 1000 |
-|  | Total Nodes | 95 | 95 | 95 | 95
-|  | Message Size (B) | 1000 | 1000 | 1000 | 1000 |
-|  | Network-wide Message Rate (msgs/s) | 200 | 200 | 200 | 200 |
-|  | Topology | B-A | B-A | B-A | B-A |
-|  | Input Deg. Param. | 2 | 6 | 12 | 16 |
-
 ## References
-
-
 
 [1] R. Bakhshi, F. Bonnet, W. Fokkink, and B. Haverkort, “Formal analysis techniques for gossiping protocols,”SIGOPS Oper. Syst.Rev., vol. 41, no. 5, pp. 28–36, Oct. 2007.
 
