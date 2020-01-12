@@ -292,40 +292,203 @@ The drop then quickly plateaus after it’s initial drop. This trend suggests th
 <p align="center"> Graph 3: Total Time for Series 1-6 Results Overlayed </p>
 
 <p align="center">
-    <img src="images/phase2_series1_total_nano_time.png" width="60%">
+    <img src="images/phase2_series1_dissemination_times.png" width="60%">
 </p>
 
-<p align="center"> Graph 4: Series 1 a-d Total Nano Time  </p>
+<p float="center">
+    <img src="images/phase2_series1a_cumulative_dis.png" width="45%" />
+    <img src="images/phase2_series1b_cumulative_dis.png" width="45%" />
+</p>
+
+<p align="left"> 
+    Graph 4: Phase 2 Series 1a 
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Graph 5: Phase 2 Series 1b 
+</p>
+
+<p float="center">
+    <img src="images/phase2_series1c_cumulative_dis.png" width="45%" />
+    <img src="images/phase2_series1d_cumulative_dis.png" width="45%" />
+</p>
+
+<p align="left"> 
+    Graph 6: Phase 2 Series 1c
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Graph 7: Phase 2 Series 1d
+</p>
+
+<p align="center"> Graph 8: Series 1 a-d Total Nano Time  </p>
 
 <p align="center">
-    <img src="images/phase2_series2_total_nano_time.png" width="60%">
+    <img src="images/phase2_series2_dissemination_times.png" width="60%">
 </p>
 
-<p align="center"> Graph 5: Series 2 a-d Total Nano Time </p>
+<p align="center"> Graph 9: Series 2 a-d Total Nano Time </p>
+
+<p float="center">
+    <img src="images/phase2_series2a_cumulative_dis.png" width="45%" />
+    <img src="images/phase2_series2b_cumulative_dis.png" width="45%" />
+</p>
+
+<p align="left"> 
+    Graph 10: Phase 2 Series 2a
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Graph 11: Phase 2 Series 2b
+</p>
+
+<p float="center">
+    <img src="images/phase2_series2c_cumulative_dis.png" width="45%" />
+    <img src="images/phase2_series2d_cumulative_dis.png" width="45%" />
+</p>
+
+<p align="left"> 
+    Graph 12: Phase 2 Series 2c
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Graph 13: Phase 2 Series 2d
+</p>
 
 <p align="center">
-    <img src="images/phase2_series3_total_nano_time.png" width="60%">
+    <img src="images/phase2_series3_dissemination_times.png" width="60%">
 </p>
 
-<p align="center"> Graph 6: Series 3 a-d Total Nano Time </p>
+<p align="center"> Graph 14: Series 3 a-d Total Nano Time </p>
+
+<p float="center">
+    <img src="images/phase2_series3a_cumulative_dis.png" width="45%" />
+    <img src="images/phase2_series3b_cumulative_dis.png" width="45%" />
+</p>
+
+<p align="left"> 
+    Graph 15: Phase 2 Series 3a
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Graph 16: Phase 2 Series 3b
+</p>
+
+<p float="center">
+    <img src="images/phase2_series3c_cumulative_dis.png" width="45%" />
+    <img src="images/phase2_series3d_cumulative_dis.png" width="45%" />
+</p>
+
+<p align="left"> 
+    Graph 17: Phase 2 Series 3c
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Graph 18: Phase 2 Series 3d
+</p>
 
 <p align="center">
-    <img src="images/phase2_series4_total_nano_time.png" width="60%">
+    <img src="images/phase2_series4_dissemination_times.png" width="60%">
 </p>
 
-<p align="center"> Graph 7: Series 4 a-d Total Nano Time </p>
+<p align="center"> Graph 19: Series 4 a-d Total Nano Time </p>
+
+
+<p float="center">
+    <img src="images/phase2_series4a_cumulative_dis.png" width="45%" />
+    <img src="images/phase2_series4b_cumulative_dis.png" width="45%" />
+</p>
+
+<p align="left"> 
+    Graph 20: Phase 2 Series 4a
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Graph 21: Phase 2 Series 4b
+</p>
+
+<p float="center">
+    <img src="images/phase2_series4c_cumulative_dis.png" width="45%" />
+</p>
+
+<p align="left"> 
+    Graph 22: Phase 2 Series 4c
+</p>
 
 <p align="center">
-    <img src="images/phase2_series5_total_nano_time.png" width="60%">
+    <img src="images/phase2_series5_dissemination_times.png" width="60%">
 </p>
 
-<p align="center"> Graph 8: Series 5 a-d Total Nano Time  </p>
+<p align="center"> Graph 23: Series 5 a-d Total Nano Time  </p>
+
+<p float="center">
+    <img src="images/phase2_series5a_cumulative_dis.png" width="45%" />
+    <img src="images/phase2_series5b_cumulative_dis.png" width="45%" />
+</p>
+
+<p align="left"> 
+    Graph 24: Phase 2 Series 5a
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Graph 25: Phase 2 Series 5b
+</p>
+
+<p float="center">
+    <img src="images/phase2_series5c_cumulative_dis.png" width="45%" />
+    <img src="images/phase2_series5d_cumulative_dis.png" width="45%" />
+</p>
+
+<p align="left"> 
+    Graph 26: Phase 2 Series 5c
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Graph 27: Phase 2 Series 5d
+</p>
 
 <p align="center">
-    <img src="images/phase2_series6_total_nano_time.png" width="60%">
+    <img src="images/phase2_series6_dissemination_times.png" width="60%">
 </p>
 
-<p align="center"> Graph 9: Series 6 a-d Total Nano Time </p>
+<p align="center"> Graph 28: Series 6 a-d Total Nano Time </p>
+
+<p float="center">
+    <img src="images/phase2_series6a_cumulative_dis.png" width="45%" />
+    <img src="images/phase2_series6b_cumulative_dis.png" width="45%" />
+</p>
+
+<p align="left"> 
+    Graph 29: Phase 2 Series 6a
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Graph 30: Phase 2 Series 6b
+</p>
+
+<p float="center">
+    <img src="images/phase2_series6c_cumulative_dis.png" width="45%" />
+    <img src="images/phase2_series6d_cumulative_dis.png" width="45%" />
+</p>
+
+<p align="left"> 
+    Graph 31: Phase 2 Series 6c
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Graph 32: Phase 2 Series 6d
+</p>
 
 The graphs for series 2 - 6 are very similar to the one shown in Phase 1. Graphs 4, 6 and 7 are identical, with a high initial spike then followed by “lobes”. Like [Graph 3 in Phase 1](#Phase-1-Total-Time-to-Dissemination-“Total-Nano-Time”), The lobes here also have a shape similar to a poisson distribution. The time each message had taken to reach its destination had been recorded and then aggregated. The graphs above (Graph 4 - 9) show that the highest peaks occurred for test cases with the lowest input degree parameter of connectivity. 
 
