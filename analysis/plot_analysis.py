@@ -82,14 +82,13 @@ def computeMetricsCum(filename=None, fig=0):
                 nanoTimes.append(m.totalNanoTime)
                 ldh.append(m.lastDeliveryHop)
 
-
     fig1, ax1 = plt.subplots(num=fig)
 
     nanoTimesArr = np.asarray(nanoTimes)
     counts, bin_edges = np.histogram(nanoTimesArr, bins=2000, density=True)
     cdf = np.cumsum(counts)
     plt.plot(bin_edges[1:], cdf / cdf[-1], label='_nolegend_')
-    vline_1 = np.percentile(nanoTimesArr, 51)
+    vline_1 = np.percentile(nanoTimesArr, 50)
     vline_2 = np.percentile(nanoTimesArr, 99)
     plt.title("Cumulative Distribution of Dissemination Times")
     ax1.set_xlabel('Dissemination Time (ns)')
@@ -101,13 +100,14 @@ def computeMetricsCum(filename=None, fig=0):
     ax1_top.set_xlim(low * 1e-6, high * 1e-6)
     ax1.axvline(vline_1, label='v1', linestyle='--', color='k')
     ax1.axvline(vline_2, label='v2', linestyle='--', color='r')
-    print(ax1.lines)
-    ax1.legend(['51%  within {0:.1f}ms'.format(vline_1 * 1e-6),
+    ax1.legend(['50%  within {0:.1f}ms'.format(vline_1 * 1e-6),
                 '99%  within {0:.1f}ms'.format(vline_2 * 1e-6)])
     fig1.tight_layout()
 
     m = re.search('(?<=\/analysis)(\w{2})', filename)
-    fig1.savefig('phase1_series{}_cumulative_dis.png'.format(m.group(0)))
+    phaseNum = re.search('(?<=phase)(\w{1})', filename)
+    fig1.savefig('phase{}_series{}_cumulative_dis.png'
+                 .format(phaseNum.group(0), m.group(0)))
 
     nanoMean = np.mean(nanoTimes)
     nanoMedian = np.median(nanoTimes)
@@ -124,15 +124,17 @@ def computeMetricsCum(filename=None, fig=0):
           .format(ldhMean, ldhMedian, ldhStd))
 
 
-# To overlay histogram of all tests into one graph, set filename to 
-# 'analyzed_results_json/analysis*', turn off the legend, and turn of 
+# To overlay histogram of all tests into one graph, set filename to
+# 'analyzed_results_json/analysis*', turn off the legend, and turn of
 # fig.savefig below. Also, comment out the entire for loop below.
 # TODO: integrate this better
 num = 0
 filename = 'phase1_processed_data/analysis1*'
 fig, ax = computeMetricsHist(filename, num)
-m = re.search('(?<=\/analysis)(\w{1})', filename)
-fig.savefig('phase1_series{}_dissemination_times.png'.format(m.group(0)))
+seriesNum = re.search('(?<=\/analysis)(\w{1})', filename)
+phaseNum = re.search('(?<=phase)(\w{1})', filename)
+fig.savefig('phase{}_series{}_dissemination_times.png'
+            .format(phaseNum.group(0), seriesNum.group(0)))
 
 num += 1
 files = glob.glob(filename)
