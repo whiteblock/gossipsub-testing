@@ -58,7 +58,7 @@ def computeMetricsHist(filename=None, fig=0):
     ax2_top.set_xlabel('Dissemination Time (ms)')
     low, high = ax2.get_xlim()
     ax2_top.set_xlim(low * 1e-6, high * 1e-6)
-    # ax2.legend(['Test A', 'Test B', 'Test C', 'Test D'])
+    ax2.legend(['Test A', 'Test B', 'Test C', 'Test D'])
     fig2.tight_layout()
     return fig2, ax2
 
@@ -107,7 +107,7 @@ def computeMetricsCum(filename=None, fig=0):
     fig1.tight_layout()
 
     m = re.search('(?<=\/analysis)(\w{2})', filename)
-    fig1.savefig('phase2_series{}_cumulative_dis.png'.format(m.group(0)))
+    fig1.savefig('phase1_series{}_cumulative_dis.png'.format(m.group(0)))
 
     nanoMean = np.mean(nanoTimes)
     nanoMedian = np.median(nanoTimes)
@@ -129,10 +129,10 @@ def computeMetricsCum(filename=None, fig=0):
 # fig.savefig below. Also, comment out the entire for loop below.
 # TODO: integrate this better
 num = 0
-filename = 'analyzed_results_json/analysis*'
+filename = 'phase1_processed_data/analysis1*'
 fig, ax = computeMetricsHist(filename, num)
-# m = re.search('(?<=\/analysis)(\w{1})', filename)
-# fig.savefig('phase2_series{}_dissemination_times.png'.format(m.group(0)))
+m = re.search('(?<=\/analysis)(\w{1})', filename)
+fig.savefig('phase1_series{}_dissemination_times.png'.format(m.group(0)))
 
 num += 1
 files = glob.glob(filename)
