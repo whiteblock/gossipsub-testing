@@ -174,10 +174,38 @@ In the test scenarios, the distribution graphs of total nano times included an i
 
 
 <p align="center">
-    <img src="images/phase1_series1_total_nano_time.png" width="60%">
+    <img src="images/phase1_series1_dissemination_times.png" width="60%">
 </p>
 
 <p align="center"> Graph 1: Series 1 a-d Total Nano Time</p>
+
+<p float="center">
+    <img src="images/phase1_series1a_cumulative_dis.png" width="45%" />
+    <img src="images/phase1_series1b_cumulative_dis.png" width="45%" />
+</p>
+
+<p align="left"> 
+    Graph 1a Phase 1 Series 1a
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Graph 1b: Phase 1 Series 1b
+</p>
+
+<p float="center">
+    <img src="images/phase1_series1c_cumulative_dis.png" width="45%" />
+    <img src="images/phase1_series1d_cumulative_dis.png" width="45%" />
+</p>
+
+<p align="left"> 
+    Graph 1c: Phase 1 Series 1c
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Graph 1d: Phase 1 Series 1d
+</p>
 
 For each increase in B-A degree inputs, the initial spike of short nano times and heights of the first lobe did not follow a particular trend. The peaks of the initial spikes in tests 1a, 1b, 1c, and 1d are approximately 5650, 3950, 3550 and 2850, respectively. The peaks of the first lobe in tests 1a, 1b, 1c, and 1d are approximately 1400, 1500, 1650, and 1650, respectively. It is inconclusive what the effects of degree distributions are on total nano times. The presence of lobes cannot be explained by the GossipSubHeartbeatInterval[6], which is defaulted to 1 second at the time of these tests. The approximate times of the peaks of the spikes followed by the first three lobes are 6 ms, 75 ms, 170 ms, and 266 ms, respectively. These distances are far less than 1 second.
 
