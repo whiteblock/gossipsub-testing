@@ -58,7 +58,7 @@ def computeMetricsHist(filename=None, fig=0):
     ax2_top.set_xlabel('Dissemination Time (ms)')
     low, high = ax2.get_xlim()
     ax2_top.set_xlim(low * 1e-6, high * 1e-6)
-    ax2.legend(['Test A', 'Test B', 'Test C', 'Test D'])
+    # ax2.legend(['Test A', 'Test B', 'Test C', 'Test D'])
     fig2.tight_layout()
     return fig2, ax2
 
@@ -123,11 +123,16 @@ def computeMetricsCum(filename=None, fig=0):
     print('Last Delivery Hop - mean: {}, median: {}, std: {}'
           .format(ldhMean, ldhMedian, ldhStd))
 
+
+# To overlay histogram of all tests into one graph, set filename to 
+# 'analyzed_results_json/analysis*', turn off the legend, and turn of 
+# fig.savefig below. Also, comment out the entire for loop below.
+# TODO: integrate this better
 num = 0
-filename = 'analyzed_results_json/analysis6*'
+filename = 'analyzed_results_json/analysis*'
 fig, ax = computeMetricsHist(filename, num)
-m = re.search('(?<=\/analysis)(\w{1})', filename)
-fig.savefig('phase2_series{}_dissemination_times.png'.format(m.group(0)))
+# m = re.search('(?<=\/analysis)(\w{1})', filename)
+# fig.savefig('phase2_series{}_dissemination_times.png'.format(m.group(0)))
 
 num += 1
 files = glob.glob(filename)
@@ -142,4 +147,4 @@ for file in files:
         print("relativeMessageRedundancy key error, skipping analysis")
     num += 1
 
-# plt.show()
+plt.show()
