@@ -3,13 +3,15 @@
 ### Overview
 The purpose of this initiative is to test the performance of the gossipsub protocol implementation in [go-libp2p-pubsub](https://github.com/libp2p/go-libp2p-pubsub). With time constraints present in Ethereum 2.0, it is important to verify that messages will be disseminated throughout the network in a timely manner.  This effort is supported by an [Eth2.0 Grant co-funded by the Ethereum Foundation and ConsenSys](https://blog.ethereum.org/2019/08/26/announcing-ethereum-foundation-and-co-funded-grants/).
 
-## Synopsis of Test and Results
+## Synopsis of Tests and Results
 
 Currently, this testing effort has completed two phases. Tests were run using the Whiteblock Genesis platform on a single, large cloud instance. 
 
 Phase 1 tests focused on the correctness of the the host implementation (go-libp2p-core & go-libp2p-pubsub) and testing methodology. The results of phase 1 uncovered message losses of 30% due to Golang channel queue overflows in the `go-libp2p-pubsub` host implementation and inconsistent delays introduced by Golang tickers used by the phase 1 testing methodology. `go-libp2p-pubsub` developers provided a remedy for overflows by adding a feature which allows increasing internal channel queue sizes. The methodology of generating gossipsub messages with Golang tickers was also changed. The fixes resulted in 0% message loss for network topologies generated using a Barabasi-Albert input parameter greater than 2. While these fixes worked for the scope of testing, it is highly suggested a permanent solution beyond increasing queue sizes is implemented.
 
-Phase 2 focused on introducing network impairments to stress test the gossipsub protocol. Overall, Phase 2 results show that gossipsub performs sufficiently well to suit the Ethereum 2.0 specifications. Under large network latencies of 400ms between any two nodes, the maximum gossip time during tests was 4.573 seconds which is under the 6 second block time specification. Results showed CPU resources were never throttled (i.e. CPU usage never reached 100%). However, results did show erratic message interrarival times which may be caused by a potential inefficiency in `go-libp2p-pubsub` implementation. More details can be found in section "[Potential Testing Inefficiencies](#potential-testing-inefficienccies)".
+Phase 2 focused on introducing network impairments to stress test the gossipsub protocol. Overall, Phase 2 results show that gossipsub performs sufficiently well to suit the Ethereum 2.0 specifications. Under large network latencies of 400ms between any two nodes, the maximum gossip time during tests was 4.573 seconds which is under the 6 second block time specification. Results showed CPU resources were never throttled (i.e. CPU usage never reached 100%). However, results did show erratic message interrarival times which may be caused by a potential inefficiency in the `go-libp2p-pubsub` implementation or testing methodology. More details can be found in section "[Potential Testing Inefficiencies](#potential-testing-inefficienccies)."
+
+The first two phases of this testing effort has brought to light various issues in which the community has responded with fixes. Scalability testing is the next logical step, and we have provided a summary of future work for the community to enhance Libp2p, Gossipsub, and Whiteblock Genesis to achieve testing of larger network sizes. These next steps are outlined in Section "[Next Steps - Community Solicited Research](#Next-Steps---Community-Solicited-Research)."
 
 ## Community Feedback
 
@@ -32,16 +34,16 @@ We invite all community members interested in providing feedback to visit our di
     - [Phase 1: Message Delivery Ratio (MDR) Results](#phase-1-message-delivery-ratio-mdr-results)
         - [MDR Fix #1 for Phase 2 - Outbound Peer Queue Size](#mdr-fix-1-for-phase-2---outbound-peer-queue-size)
         - [MDR Fix #2 for Phase 2 - Testing Logic Refactor](#mdr-fix-2-for-phase-2---testing-logic-refactor)
-    - [Phase 1: Total Time to Dissemination (“Total Nano Time”)](#phase-1-total-time-to-dissemination-total-nano-time)
+    - [Phase 1: Message Dissemination Time (“Total Nano Time”)](#Phase-1-Message-Dissemination-Time-“Total-Nano-Time”)
 - [Phase 2 Testing and Results](#phase-2-testing-and-results)
     - [Phase 2: Summary](#phase-2-setup-summary)
     - [Phase 2: Test Series](#phase-2-test-series)
     - [Phase 2: Message Delivery Ratio (MDR)](#phase-2-message-delivery-ratio-mdr)
     - [Phase 2: Last Delivery Hop Distribution](#phase-2-last-delivery-hop-distribution)
-    - [Phase 2: Total Time to Dissemination (“Total Nano Time”)](#phase-2-total-time-to-dissemination-total-nano-time)
+    - [Phase 2: Message Dissemination Time (“Total Nano Time”)](#Phase-2-Message-Dissemination-Time-“Total-Nano-Time”)
     - [Potential go-libp2p-pubsub Inefficiencies](#Potential-go-libp2p-pubsub-Inefficiencies)
     - [Phase 2: Resource utilization](#phase-2-resource-utilization)
-- [Next Steps - Community Solicited Research](#next-steps)
+- [Next Steps - Community Solicited Research](#Next-Steps---Community-Solicited-Research)
 
 ## Introduction
 
@@ -704,7 +706,7 @@ While the first two phases of this testing effort shows that the Libp2p Gossipsu
 * Permanent fix which does not require manually increasing Golang channel queue sizes in go-libp2p-pubsub should be implemented.
 * `go-libp2p-pubsub-tracer` should be integrated into the node implementation for tests
 * Erratic message interarrival times should be investigated and fixed
-* Testing methodology should port to the next generation of Whiteblock Genesis for larger scale tests 
+* Testing methodology should port to the next version of Whiteblock Genesis for larger scale tests 
 
 With these additional features, a richer set of future tests can be performed. Lastly, future work should include the variation of gossipsub parameters (e.g. GossipSubD, GossipSubHeartbeatInterval, etc.) at different network sizes.
 
