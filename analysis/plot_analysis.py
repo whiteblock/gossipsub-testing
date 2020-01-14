@@ -1,13 +1,8 @@
 import glob
 import json
 import re
-import sys
 import numpy as np
 import matplotlib.pyplot as plt
-# change this to your virtualenv path
-sys.path.append('../../venv/gs-test/lib/python3.6/site-packages')
-
-# %matplotlib inline
 
 metricProps = {
     'messageID': '',
@@ -25,15 +20,24 @@ class Metric(object):
         self.lastDeliveryHop = float(props['lastDeliveryHop'])
 
 
-def computeMetricsHist(filename=None, fig=0):
+def graph_dissemination_hist(path=None, figlabel=0, limits=None):
+    """ Graph a histogram of message dissemination times. Use a wildcard in
+    path overlay multiple test results of a series into one graph. Example:
+    `path=phase1_processed_data/analysis2*` for series 2. ``limits`` sets the
+    x-axis limits.
 
-    if filename is None:
+    Returns:
+        fig -- matplotlib figure
+        ax  -- matplotlib axes
+    """
+
+    if path is None:
         pubsubAnalysisFiles = glob.glob('*.json')
     else:
-        pubsubAnalysisFiles = glob.glob('{}'.format(filename))
+        pubsubAnalysisFiles = glob.glob('{}'.format(path))
         pubsubAnalysisFiles.sort()
 
-    fig2, ax2 = plt.subplots(num=fig)
+    fig, ax = plt.subplots(num=figlabel)
 
     for pubsubAnalysisFile in pubsubAnalysisFiles:
         print(pubsubAnalysisFile)
@@ -53,17 +57,22 @@ def computeMetricsHist(filename=None, fig=0):
     plt.title("Histogram of Message Dissemination Times (Total Nano Times)")
     plt.xlabel('Dissemination Time (ns)')
     plt.ylabel('Number of Messages')
-    ax2.ticklabel_format(style='sci', axis='x', scilimits=(9, 9))
-    ax2_top = ax2.twiny()
-    ax2_top.set_xlabel('Dissemination Time (ms)')
-    low, high = ax2.get_xlim()
-    ax2_top.set_xlim(low * 1e-6, high * 1e-6)
-    ax2.legend(['Test A', 'Test B', 'Test C', 'Test D'])
-    fig2.tight_layout()
-    return fig2, ax2
+    ax.ticklabel_format(style='sci', axis='x', scilimits=(9, 9))
+    ax_top = ax.twiny()
+    ax_top.set_xlabel('Dissemination Time (ms)')
+    low, high = ax.get_xlim()
+    ax_top.set_xlim(low * 1e-6, high * 1e-6)
+    ax.legend(['Test A', 'Test B', 'Test C', 'Test D'])
+
+    if limits is not None:
+        ax.set_xlim(limits)
+
+    fig.tight_layout()
+
+    return fig, ax
 
 
-def computeMetricsCum(filename=None, fig=0):
+def graph_cum_and_compute_metrics(filename=None, fig=0, save=False):
     nanoTimes = []
     ldh = []
 
@@ -104,10 +113,11 @@ def computeMetricsCum(filename=None, fig=0):
                 '99%  within {0:.1f}ms'.format(vline_2 * 1e-6)])
     fig1.tight_layout()
 
-    m = re.search('(?<=\/analysis)(\w{2})', filename)
-    phaseNum = re.search('(?<=phase)(\w{1})', filename)
-    fig1.savefig('phase{}_series{}_cumulative_dis.png'
-                 .format(phaseNum.group(0), m.group(0)))
+    if save is True:
+        m = re.search('(?<=\/analysis)(\w{2})', filename)
+        phaseNum = re.search('(?<=phase)(\w{1})', filename)
+        fig1.savefig('phase{}_series{}_cumulative_dis.png'
+                     .format(phaseNum.group(0), m.group(0)))
 
     nanoMean = np.mean(nanoTimes)
     nanoMedian = np.median(nanoTimes)
@@ -124,29 +134,42 @@ def computeMetricsCum(filename=None, fig=0):
           .format(ldhMean, ldhMedian, ldhStd))
 
 
-# To overlay histogram of all tests into one graph, set filename to
-# 'analyzed_results_json/analysis*', turn off the legend, and turn of
-# fig.savefig below. Also, comment out the entire for loop below.
-# TODO: integrate this better
-num = 0
+def graph_series_cum_dist(dirname=None, starting_figlabel=0):
+    """Graphs message dissemination cumulative distribution for an entire
+    series. ``starting_figlabel`` is the starting integer label for the graphs.
+    """
+    if dirname is None:
+        print("missing dirname")
+        return
+
+    num = starting_figlabel
+    files = glob.glob(filename)
+    files.sort()
+    for file in files:
+        print("\n\nfile:" + file)
+        graph_cum_and_compute_metrics(file, num)
+        num += 1
+
+
+def gen_phase_histogram_overlay(path=None, fig=0):
+    print('hello')
+
+
 filename = 'phase1_processed_data/analysis1*'
-fig, ax = computeMetricsHist(filename, num)
+
+# graph all message dissemination histograms of a series
+fig, ax = graph_dissemination_hist(filename, figlabel=0,
+                                   limits=(-0.050e9, 0.5e9))
 seriesNum = re.search('(?<=\/analysis)(\w{1})', filename)
 phaseNum = re.search('(?<=phase)(\w{1})', filename)
 fig.savefig('phase{}_series{}_dissemination_times.png'
             .format(phaseNum.group(0), seriesNum.group(0)))
 
-num += 1
-files = glob.glob(filename)
-print(files)
-files.sort()
-for file in files:
-    try:
-        print("\n\nfile:" + file)
-        computeMetricsCum(file, num)
-    except KeyError:
-        # not sure why this is happening
-        print("relativeMessageRedundancy key error, skipping analysis")
-    num += 1
+# graph all message dissemination cumulative distributions of a series
+graph_series_cum_dist(filename, 1)
+
+# graph entire phase into a single graph
+graph_dissemination_hist('phase2_processed_data/analysis*', figlabel=5,
+                         limits=(-0.050e9, 3e9))
 
 plt.show()
