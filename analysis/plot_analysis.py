@@ -53,8 +53,11 @@ def graph_dissemination_hist(path=None, figlabel=0, limits=None):
                 ldh.append(m.lastDeliveryHop)
 
         plt.hist(nanoTimes, bins='auto', histtype='step')
-
-    plt.title("Histogram of Message Dissemination Times (Total Nano Times)")
+    phaseNum = re.search('(?<=phase)(\w{1})', path)
+    seriesNum = re.search('(?<=\/analysis)(\w{1})', path)
+    plt.title("Phase {} Series {}\n"
+              .format(phaseNum.group(0), seriesNum.group(0)) + "Histogram of" +
+              " Message Dissemination Times (Total Nano Times)")
     plt.xlabel('Dissemination Time (ns)')
     plt.ylabel('Number of Messages')
     ax.ticklabel_format(style='sci', axis='x', scilimits=(9, 9))
@@ -99,7 +102,10 @@ def graph_cum_and_compute_metrics(filename=None, fig=0, save=False):
     plt.plot(bin_edges[1:], cdf / cdf[-1], label='_nolegend_')
     vline_1 = np.percentile(nanoTimesArr, 50)
     vline_2 = np.percentile(nanoTimesArr, 99)
-    plt.title("Cumulative Distribution of Dissemination Times")
+    m = re.search('(?<=\/analysis)(\w{2})', filename)
+    phaseNum = re.search('(?<=phase)(\w{1})', filename)
+    plt.title("Phase {} Series {} Cumulative Distribution of Dissemination "
+              .format(phaseNum.group(0), m.group(0)) + "Times")
     ax1.set_xlabel('Dissemination Time (ns)')
     ax1.set_ylabel('Percent of Messages')
     ax1_top = ax1.twiny()
@@ -111,11 +117,11 @@ def graph_cum_and_compute_metrics(filename=None, fig=0, save=False):
     ax1.axvline(vline_2, label='v2', linestyle='--', color='r')
     ax1.legend(['50%  within {0:.1f}ms'.format(vline_1 * 1e-6),
                 '99%  within {0:.1f}ms'.format(vline_2 * 1e-6)])
+
     fig1.tight_layout()
 
     if save is True:
-        m = re.search('(?<=\/analysis)(\w{2})', filename)
-        phaseNum = re.search('(?<=phase)(\w{1})', filename)
+
         fig1.savefig('phase{}_series{}_cumulative_dis.png'
                      .format(phaseNum.group(0), m.group(0)))
 
@@ -147,15 +153,10 @@ def graph_series_cum_dist(dirname=None, starting_figlabel=0):
     files.sort()
     for file in files:
         print("\n\nfile:" + file)
-        graph_cum_and_compute_metrics(file, num)
+        graph_cum_and_compute_metrics(file, num, save=True)
         num += 1
 
-
-def gen_phase_histogram_overlay(path=None, fig=0):
-    print('hello')
-
-
-filename = 'phase1_processed_data/analysis1*'
+filename = 'phase2_processed_data/analysis1*'
 
 # graph all message dissemination histograms of a series
 fig, ax = graph_dissemination_hist(filename, figlabel=0,
