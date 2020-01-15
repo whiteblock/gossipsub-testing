@@ -5,11 +5,13 @@ The purpose of this initiative is to test the performance of the gossipsub proto
 
 ## Synopsis of Tests and Results
 
-Currently, this testing effort has completed two phases. Tests were run using the Whiteblock Genesis platform on a single, large cloud instance. The test network size was 95 nodes for both phases, and nodes were run in separate Docker containers in the cloud instance. In each test, messages are generated globally at 200 msgs/s where each message is transmitted by a randomly selected node.
+Currently, this testing effort has completed two phases. Tests were run using the Whiteblock Genesis platform on a single, large cloud instance. The test network size was 95 nodes for both phases, and nodes were run in separate Docker containers in the cloud instance. In each test, messages are generated globally at 200 msgs/s where each message is transmitted by a randomly selected node. Testing results have been compiled into a Google sheet at the following link:
+
+- [Gossipsub Testing Results Compilation](https://docs.google.com/spreadsheets/d/1ZoY8Rz-BqKiX-ik9Wdd-zfR0mcoOj_CYUSz8tSwtb6w/edit#gid=0)
 
 Phase 1 tests focused on the correctness of the the host implementation (go-libp2p-core & go-libp2p-pubsub) and testing methodology. The results of phase 1 uncovered message losses of 30% due to Golang channel queue overflows in the `go-libp2p-pubsub` host implementation and inconsistent delays introduced by Golang tickers used by the phase 1 testing methodology. `go-libp2p-pubsub` developers provided a remedy for overflows by adding a feature which allows increasing internal channel queue sizes. The methodology of generating gossipsub messages with Golang tickers was also changed. The fixes resulted in 0% message loss for network topologies generated using a Barabasi-Albert input parameter greater than 2. While these fixes worked for the scope of testing, it is highly suggested a permanent solution beyond increasing queue sizes is implemented.
 
-Phase 2 focused on introducing network impairments to stress test the gossipsub protocol. Overall, Phase 2 results show that gossipsub performs sufficiently well to suit the Ethereum 2.0 specifications. Under large network latencies of 400ms between any two nodes, the maximum gossip time during tests was 4.573 seconds which is under the 6 second block time specification. Results showed CPU resources were never throttled (i.e. CPU usage never reached 100%). However, results did show erratic message interrarival times which may be caused by a potential inefficiency in the `go-libp2p-pubsub` implementation or testing methodology. More details can be found in section "[Potential Testing Inefficiencies](#potential-testing-inefficienccies)."
+Phase 2 focused on introducing network impairments to stress test the gossipsub protocol. Overall, Phase 2 results show that gossipsub performs sufficiently well to suit the Ethereum 2.0 specifications. Under large network latencies of 400ms between any two nodes, the maximum gossip time during tests was 4.573 seconds which is under the 6 second block time specification. Results showed CPU resources were never throttled (i.e. CPU usage never reached 100%). However, results did show erratic message interrarival times which may be caused by a potential inefficiency in the `go-libp2p-pubsub` implementation or testing methodology. More details can be found in section "[Potential go-libp2p-pubsub Inefficiencies](#Potential-go-libp2p-pubsub-Inefficiencies)."
 
 The first two phases of this testing effort has brought to light various issues in which the community has responded with fixes. Scalability testing is the next logical step, and we have provided a summary of future work for the community to enhance Libp2p, Gossipsub, and Whiteblock Genesis to achieve testing of larger network sizes. These next steps are outlined in Section "[Next Steps - Community Solicited Research](#Next-Steps---Community-Solicited-Research)."
 
@@ -73,7 +75,7 @@ Discovery and Routing has been turned off as these parameters utilize the built 
 
 SECIO message encryption is enabled as this is default security for Libp2p. This encryption has also been used for [interop](https://whiteblock.io/ethereum-2-0-grant-update-2-interop/) efforts.
 
-Readers interested in the results should jump directly to the [Phase 1](#phase-1-testing-and-results) and [Phase 2](#phase-1-testing-and-results) testing and results sections.
+Readers interested in the results should jump directly to the [Phase 1](#phase-1-testing-and-results) and [Phase 2](#phase-2-testing-and-results) testing and results sections.
 
 ### Resource Allocation Motivation
 
