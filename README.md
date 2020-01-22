@@ -336,7 +336,7 @@ Generally speaking, the degree distribution of a network affected the Last Deliv
     <img src="images/last_delivery_hop.png" width="60%">
 </p>
 
-<p align="center"> Graph 2: Last Delivery Hop Count </p>
+<p align="center"> Graph 2: Last Delivery Hop Count (Series 4 is omitted because all tests were performed on the same topology) </p>
 
 The drop quickly stabilizes after its initial drop. This trend suggests that the degree of connectivity of greater than 2 will not affect the last delivery hop assuming GossipSubD = 6 and the number of nodes is 95. Typically, hops scale with O(log(N)) where N is the size of the network. Further investigation is needed to understand the relationship of network size to last delivery hop count when using the gossipsub protocol. Also, at a low degree distribution (B-A degree input of 2), the variance of last delivery hop is larger. This is expected as sparser topologies should result in an increased number of hops for each gossip message. Overall, it is suggested that the Eth2 discovery protocol prevents sparsely connected nodes to optimize block announcement times.
 
