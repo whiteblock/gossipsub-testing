@@ -60,15 +60,16 @@ def graph_dissemination_hist(path=None, figlabel=0, limits=None):
               " Message Dissemination Times (Total Nano Times)")
     plt.xlabel('Dissemination Time (ns)')
     plt.ylabel('Number of Messages')
+
+    if limits is not None:
+        ax.set_xlim(limits)
+
     ax.ticklabel_format(style='sci', axis='x', scilimits=(9, 9))
     ax_top = ax.twiny()
     ax_top.set_xlabel('Dissemination Time (ms)')
     low, high = ax.get_xlim()
     ax_top.set_xlim(low * 1e-6, high * 1e-6)
     ax.legend(['Test A', 'Test B', 'Test C', 'Test D'])
-
-    if limits is not None:
-        ax.set_xlim(limits)
 
     fig.tight_layout()
 
@@ -155,6 +156,7 @@ def graph_series_cum_dist(dirname=None, starting_figlabel=0):
         print("\n\nfile:" + file)
         graph_cum_and_compute_metrics(file, num, save=True)
         num += 1
+
 
 filename = 'phase2_processed_data/analysis1*'
 
