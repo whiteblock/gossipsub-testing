@@ -17,7 +17,7 @@ The first two phases of this testing effort has brought to light various issues 
 
 ## Community Feedback
 
-We invite all community members interested in providing feedback to visit our discourse on this topic at the following link: https://community.whiteblock.io/t/gossipsub-tests/17/10.
+We invite all community members interested in providing feedback to visit our discourse on this topic at the following link: https://community.whiteblock.io/t/testing-gossipsub-with-genesis-the-results/81.
 
 ## Table of Contents
 - [Introduction](#introduction)
